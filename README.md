@@ -79,17 +79,6 @@ cd Code
 npm install
 ```
 
-Edit `config/.env.development` and fill in your real values:
-
-| Variable | Description |
-|----------|-------------|
-| `DB_URI` | MongoDB connection string |
-| `REDIS_URI` | Redis connection string |
-| `EMAIL_APP` | Gmail address used to send OTPs |
-| `EMAIL_APP_PASSWORD` | Gmail App Password (not your normal password) |
-| `CLIENT_IDS` | Google OAuth client ID (optional) |
-| `ENC_BYTE` | Must be exactly **32 characters** |
-
 Start the backend in development mode:
 
 ```bash
@@ -109,8 +98,6 @@ npm run dev
 ```
 
 The React app starts on **http://localhost:5173**.
-
-Vite automatically proxies all `/api/*` requests to `http://localhost:3000`, so no CORS configuration is needed in development.
 
 ---
 
@@ -180,10 +167,3 @@ http://localhost:5173/send/<your-user-id>
 
 Anyone with this link can send you a message without creating an account.  
 Your user ID appears on your **Dashboard** page.
-
-
-## Notes
-
-- The `ENC_BYTE` value **must be exactly 32 characters** for AES-256-CBC encryption.
-- Email sending requires a valid Gmail App Password. Enable 2FA on your Google account and create an App Password at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
-- For production, use a reverse proxy (nginx/Caddy) in front of both servers and set `ORIGINS` to your frontend domain.
