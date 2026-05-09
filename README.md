@@ -181,40 +181,6 @@ http://localhost:5173/send/<your-user-id>
 Anyone with this link can send you a message without creating an account.  
 Your user ID appears on your **Dashboard** page.
 
----
-
-## Environment Variables Reference
-
-### Backend (`Code/config/.env.development`)
-
-```env
-PORT=3000
-APPLICATION_NAME="Saraha_App"
-DB_URI="mongodb://localhost:27017/Saraha_App"
-REDIS_URI="redis://localhost:6379"
-ENC_BYTE="12378978901234567891114567890122"   # exactly 32 chars
-User_TOKEN_SECRET_KEY="your-secret"
-User_REFRESH_TOKEN_SECRET_KEY="your-refresh-secret"
-System_TOKEN_SECRET_KEY="your-admin-secret"
-System_REFRESH_TOKEN_SECRET_KEY="your-admin-refresh-secret"
-ACCESS_EXPIRES_IN=1800
-REFRESH_EXPIRES_IN=31536000
-SALT_ROUND=12
-EMAIL_APP="you@gmail.com"
-EMAIL_APP_PASSWORD="your-app-password"
-CLIENT_IDS="google-client-id.apps.googleusercontent.com"
-FACEBOOK_LINK="https://facebook.com/"
-INSTAGRAM_LINK="https://instagram.com/"
-TWITTER_LINK="https://x.com/"
-```
-
-### Frontend (`frontend/.env`)
-
-```env
-VITE_API_URL=http://localhost:3000   # only needed for production builds
-```
-
----
 
 ## Notes
 
