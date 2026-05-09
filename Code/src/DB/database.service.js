@@ -20,12 +20,20 @@ export const findOne = async ({
   return await doc.exec()
 };
 
-export const create = async ({
-  model,
-  data,
-  options = { validateBeforeSave: true }
-} = {}) => {
-  return await model.create(data, options)
+export const create = async ({ model, data, options } = {}) => {
+  try {
+    console.log("🔥 CREATE DATA:", data);
+
+    const result = await model.create(data, options);
+
+    console.log("✅ CREATED USER:", result);
+
+    return result;
+  } catch (err) {
+    console.log("❌ CREATE ERROR:", err.message);
+    console.log(err);
+    throw err;
+  }
 };
 
 export const createOne = async ({

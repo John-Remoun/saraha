@@ -59,12 +59,16 @@ router.post("/login", validation(validators.login), wrap(async (req, res) => {
 }));
 
 router.post("/signup/gmail", wrap(async (req, res) => {
-  const { account, status = 201 } = await signupWithGmail(req.body, `${req.protocol}://${req.host}`);
+  const { account, status = 201 } =
+    await signupWithGmail(req.body, `${req.protocol}://${req.get("host")}`);
+
   return successResponse({ res, status, data: { account } });
 }));
 
 router.post("/login/gmail", wrap(async (req, res) => {
-  const account = await loginWithGmail(req.body, `${req.protocol}://${req.host}`);
+  const account =
+    await loginWithGmail(req.body, `${req.protocol}://${req.get("host")}`);
+
   return successResponse({ res, data: { account } });
 }));
 

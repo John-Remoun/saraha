@@ -185,44 +185,71 @@ export const login = async ({ email, password }, issuer) => {
 // ─── Google OAuth ─────────────────────────────────────────────────────────────
 const verifyGoogleAccount = async (idToken) => {
   try {
-    const client = new OAuth2Client();
-    const ticket = await client.verifyIdToken({ idToken, audience: CLIENT_IDS });
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
     const payload = ticket.getPayload();
-    if (!payload?.email_verified) throw BadRequestException({ message: "Fail to verify Google account" });
+
+    if (!payload?.email_verified) {
+      throw new Error("Email not verified");
+    }
+
     return payload;
-  } catch (_error) {
-    throw BadRequestException({ message: "Invalid Google token or Google client configuration" });
+  } catch (error) {
+    console.log("Google verify error:", error);
+    throw new Error("Invalid Google token");
   }
 };
 
 export const signupWithGmail = async ({ idToken }, issuer) => {
   const payload = await verifyGoogleAccount(idToken);
-  const existing = await findOne({ model: UserModel, filter: { email: payload.email } });
+
+  const existing = await findOne({
+    model: UserModel,
+    filter: { email: payload.email },
+  });
 
   if (existing) {
     if (existing.provider === providerEnum.System)
       throw ConflictException({ message: "Account exists with a different provider" });
-    const account = await loginWithGmail({ idToken }, issuer);
-    return { account, status: 200 };
+
+    return await loginWithGmail({ idToken }, issuer);
   }
 
   const user = await create({
     model: UserModel,
-    data: [{
+    data: {
       firstName: payload.given_name,
       lastName: payload.family_name,
       email: payload.email,
       provider: providerEnum.Google,
       profilePicture: payload.picture,
       confirmEmail: new Date(),
-    }],
+    },
   });
-  return { account: await createLoginCredentials(user[0], issuer) };
+
+  return {
+    account: await createLoginCredentials(user, issuer),
+  };
 };
 
 export const loginWithGmail = async ({ idToken }, issuer) => {
   const payload = await verifyGoogleAccount(idToken);
-  const user = await findOne({ model: UserModel, filter: { email: payload.email, provider: providerEnum.Google } });
-  if (!user) throw NotFoundException({ message: "Invalid login data" });
+
+  const user = await findOne({
+    model: UserModel,
+    filter: {
+      email: payload.email,
+      provider: providerEnum.Google,
+    },
+  });
+
+  if (!user)
+    throw NotFoundException({ message: "Invalid login data" });
+
   return await createLoginCredentials(user, issuer);
 };
