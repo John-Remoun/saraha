@@ -8,7 +8,10 @@ export const validation = (schema) => {
       if (result.error) {
         errors.push({
           key,
-          details: result.error.details?.map(e => ({ path: e.path, message: e.message })),
+          details: result.error.details?.map((e) => ({
+            path: e.path,
+            message: e.message,
+          })),
         });
       }
     }
